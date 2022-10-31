@@ -1,36 +1,55 @@
 <template>
-  <div id="map"></div>
+  <div>
+    <Search @places="changePlaces" />
+    <div id="map"></div>
+  </div>
 </template>
 
 <script lang="ts">
+import Search from "./Search.vue";
+
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl"; // or "const mapboxgl = require('mapbox-gl');"
-import MapboxLanguage from '@mapbox/mapbox-gl-language';
+import MapboxLanguage from "@mapbox/mapbox-gl-language";
 
 export default {
+  components: {
+    Search,
+  },
   mounted() {
     this.init();
   },
 
-  data() {},
+  data() {
+    return {
+      places: {
+        name: '杭州',
+        longitude: 120.2,
+				latitude: 30.3
+      },
+      map: null
+    };
+  },
   methods: {
     init() {
       // TO MAKE THE MAP APPEAR YOU MUST
       // ADD YOUR ACCESS TOKEN FROM
       // https://account.mapbox.com
-      mapboxgl.accessToken =
-        "pk.eyJ1Ijoic3VuYmluZ3FpbmciLCJhIjoiY2w5Z3R2a2g2MDgzdDN1cDIxYWUwMjUzcSJ9.JWn1byZ7mTIBqVNZzpEwRA";
+      mapboxgl.accessToken = this.accessToken;
       const map = new mapboxgl.Map({
         container: "map", // container ID
         style: "mapbox://styles/mapbox/outdoors-v11", // style URL
-        center: [120.00, 30.41], // starting position [lng, lat]
+        center: [this.places.longitude, this.places.latitude], // starting position [lng, lat]
         zoom: 15, // starting zoom
       });
-			console.log('init')
+      
+      console.log("init");
       map.on("style.load", () => {
-				map.addControl(new MapboxLanguage({
-					defaultLanguage: 'zh-Hans'
-				}));
+        map.addControl(
+          new MapboxLanguage({
+            defaultLanguage: "zh-Hans",
+          })
+        );
         map.addSource("route", {
           type: "geojson",
           data: {
@@ -78,6 +97,14 @@ export default {
           },
         });
       });
+      this.map = map;
+    },
+
+    changePlaces(places) {
+      this.places = places;
+      this.map.flyTo({
+        center: [places.longitude, places.latitude]
+      })
     },
   },
 };
@@ -85,10 +112,10 @@ export default {
 <style lang="css" scoped>
 #map {
   position: absolute;
-  top: 30px;
+  top: 20px;
   bottom: 0;
   width: 1300px;
-	height: 660px;
+  height: 660px;
   margin: 0;
   padding: 0;
 }
