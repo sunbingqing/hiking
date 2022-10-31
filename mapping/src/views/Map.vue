@@ -23,11 +23,11 @@ export default {
   data() {
     return {
       places: {
-        name: '杭州',
+        name: "杭州",
         longitude: 120.2,
-				latitude: 30.3
+        latitude: 30.3,
       },
-      map: null
+      map: null,
     };
   },
   methods: {
@@ -42,14 +42,14 @@ export default {
         center: [this.places.longitude, this.places.latitude], // starting position [lng, lat]
         zoom: 15, // starting zoom
       });
-      
+      map.addControl(
+        new MapboxLanguage({
+          defaultLanguage: "zh-Hans",
+        })
+      );
+
       console.log("init");
       map.on("style.load", () => {
-        map.addControl(
-          new MapboxLanguage({
-            defaultLanguage: "zh-Hans",
-          })
-        );
         map.addSource("route", {
           type: "geojson",
           data: {
@@ -103,8 +103,8 @@ export default {
     changePlaces(places) {
       this.places = places;
       this.map.flyTo({
-        center: [places.longitude, places.latitude]
-      })
+        center: [places.longitude, places.latitude],
+      });
     },
   },
 };
