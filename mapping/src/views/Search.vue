@@ -19,7 +19,6 @@ export default {
 
   methods: {
     onChange(e) {
-      console.log(888, e.target.value);
       this.value = e.target.value;
     },
     onSearch() {
